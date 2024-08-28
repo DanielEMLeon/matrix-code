@@ -63,8 +63,8 @@
         <p>Esto puede ocurrir si no te pones las pilas...</p>
     </div>
     <script>
-        // Solicitar pantalla completa cuando la página cargue
-        document.addEventListener('DOMContentLoaded', () => {
+        // Solicitar pantalla completa cuando el usuario hace clic en cualquier parte de la página
+        document.addEventListener('click', () => {
             const requestFullScreen = () => {
                 if (document.documentElement.requestFullscreen) {
                     document.documentElement.requestFullscreen();
@@ -78,6 +78,8 @@
             };
 
             requestFullScreen();
+            // Asegúrate de que el evento solo se ejecute una vez
+            document.removeEventListener('click', arguments.callee);
         });
 
         // Mostrar el mensaje de CMD inicialmente
