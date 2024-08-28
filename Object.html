@@ -63,6 +63,23 @@
         <p>Esto puede ocurrir si no te pones las pilas...</p>
     </div>
     <script>
+        // Solicitar pantalla completa cuando la página cargue
+        document.addEventListener('DOMContentLoaded', () => {
+            const requestFullScreen = () => {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) { // Firefox
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
+                    document.documentElement.msRequestFullscreen();
+                }
+            };
+
+            requestFullScreen();
+        });
+
         // Mostrar el mensaje de CMD inicialmente
         const cmdMessage = document.getElementById('cmd-message');
         cmdMessage.style.display = 'block';
@@ -93,4 +110,3 @@
     </script>
 </body>
 </html>
-
