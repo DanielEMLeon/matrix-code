@@ -21,6 +21,15 @@
             text-align: center;
             display: none; /* Oculta el mensaje de CMD por defecto */
         }
+        #loading-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: green;
+            text-align: center;
+            display: none; /* Oculta el mensaje de Cargando por defecto */
+        }
         .matrix {
             position: absolute;
             top: 0;
@@ -34,8 +43,10 @@
         .matrix-line {
             position: absolute;
             white-space: nowrap;
+            color: green;
             opacity: 0.8;
             animation: fall linear infinite;
+            display: none; /* Oculta las líneas por defecto */
         }
         @keyframes fall {
             from { top: -100%; }
@@ -54,8 +65,12 @@
 </head>
 <body>
     <div id="cmd-message">
-        <h1>Cargando...</h1>
-        <p>Iniciando sistema...</p>
+        <h1>C:/ Extract.Info();</h1>
+        <p>Ejecutando...</p>
+    </div>
+    <div id="loading-message">
+        <h1>Extrayendo paquete...</h1>
+        <p>Ejecutando...</p>
     </div>
     <div class="matrix" id="matrix"></div>
     <div id="message">
@@ -63,52 +78,55 @@
         <p>Esto puede ocurrir si no te pones las pilas...</p>
     </div>
     <script>
-        // Solicitar pantalla completa cuando el usuario hace clic en cualquier parte de la página
-        document.addEventListener('click', () => {
-            const requestFullScreen = () => {
-                if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen();
-                } else if (document.documentElement.mozRequestFullScreen) { // Firefox
-                    document.documentElement.mozRequestFullScreen();
-                } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                    document.documentElement.webkitRequestFullscreen();
-                } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
-                    document.documentElement.msRequestFullscreen();
-                }
-            };
-
-            requestFullScreen();
-            // Asegúrate de que el evento solo se ejecute una vez
-            document.removeEventListener('click', arguments.callee);
-        });
-
         // Mostrar el mensaje de CMD inicialmente
         const cmdMessage = document.getElementById('cmd-message');
+        const loadingMessage = document.getElementById('loading-message');
+        const matrix = document.getElementById('matrix');
+        const message = document.getElementById('message');
+
         cmdMessage.style.display = 'block';
 
-        // Mostrar el efecto Matrix después de 5 segundos
+        // Mostrar el mensaje de CMD, luego el de carga
         setTimeout(() => {
-            cmdMessage.style.display = 'none'; // Ocultar el mensaje de CMD
-            const matrix = document.getElementById('matrix');
-            matrix.style.display = 'block'; // Mostrar el efecto de Matrix
-
-            // Generar el efecto Matrix
-            for (let i = 0; i < 100; i++) {
-                const line = document.createElement('div');
-                line.className = 'matrix-line';
-                line.style.left = Math.random() * 100 + 'vw';
-                line.style.fontSize = Math.random() * 20 + 'px';
-                line.style.animationDuration = (Math.random() * 2 + 1) + 's';
-                line.textContent = Array.from({ length: 100 }, () => String.fromCharCode(Math.random() * 122)).join('');
-                matrix.appendChild(line);
-            }
-
-            // Mostrar el mensaje después de otros 5 segundos
+            cmdMessage.style.display = 'none';
+            loadingMessage.style.display = 'block';
+            
+            // Mostrar el mensaje de carga y luego el efecto Matrix
             setTimeout(() => {
-                document.getElementById('message').style.display = 'block';
-            }, 5000); // 5000 milisegundos = 5 segundos
+                loadingMessage.style.display = 'none';
+                matrix.style.display = 'block';
+                
+                // Generar el efecto Matrix
+                for (let i = 0; i < 100; i++) {
+                    const line = document.createElement('div');
+                    line.className = 'matrix-line';
+                    line.style.left = Math.random() * 100 + 'vw';
+                    line.style.fontSize = Math.random() * 20 + 10 + 'px'; // Ajustado para evitar tamaños demasiado grandes
+                    line.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    line.textContent = Array.from({ length: 100 }, () => String.fromCharCode(Math.random() * 122)).join('');
+                    matrix.appendChild(line);
+                }
 
-        }, 5000); // 5000 milisegundos = 5 segundos
+                // Mostrar el mensaje de cuidado después de otros 10 segundos
+                setTimeout(() => {
+                    // Animar las líneas de Matrix una por una
+                    const matrixLines = document.querySelectorAll('.matrix-line');
+                    matrixLines.forEach((line, index) => {
+                        setTimeout(() => {
+                            line.style.display = 'block';
+                        }, index * 50); // Retrasa cada línea para crear el efecto de escritura
+                    });
+
+                    // Mostrar el mensaje después de los efectos de Matrix
+                    setTimeout(() => {
+                        message.style.display = 'block';
+                    }, 5000); // 5000 milisegundos = 5 segundos después de que las líneas comienzan a mostrarse
+
+                }, 50); // 10000 milisegundos = 10 segundos para visualizar las líneas de Matrix antes del mensaje final
+
+            }, 2000); // 5000 milisegundos = 5 segundos para mostrar el mensaje de carga
+
+        }, 3000); // 5000 milisegundos = 5 segundos para mostrar el mensaje de CMD
     </script>
 </body>
 </html>
