@@ -12,33 +12,22 @@
             color: green;
             font-family: monospace;
         }
-        #cmd-message, #loading-message, #message {
+        #cmd-message, #loading-message, #matrix, #message {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             color: green;
             text-align: center;
-            display: none; /* Oculta el mensaje por defecto */
-        }
-        #cmd-message {
-            color: green;
-        }
-        #loading-message {
-            color: green;
+            display: none;
         }
         #message {
             color: white;
         }
         .matrix {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
-            pointer-events: none; /* Evita que el cursor interfiera */
-            display: none; /* Oculta el efecto de Matrix por defecto */
+            pointer-events: none;
         }
         .matrix-line {
             position: absolute;
@@ -46,7 +35,7 @@
             color: green;
             opacity: 0.8;
             animation: fall linear infinite;
-            display: none; /* Oculta las líneas por defecto */
+            display: none;
         }
         @keyframes fall {
             from { top: -100%; }
@@ -55,9 +44,14 @@
     </style>
 </head>
 <body>
+<audio id="alarm-sound">
+    <source src="alarm.mp3" type="audio/mpeg">
+    <source src="alarm.ogv" type="audio/ogg">
+    Tu navegador no soporta el elemento de audio.
+</audio>
     <div id="cmd-message">
         <h1>C:/ Extract.Info();</h1>
-        <p>Cambioooo</p>
+        <p>Ejecutando...</p>
     </div>
     <div id="loading-message">
         <h1>Extrayendo paquete...</h1>
@@ -68,63 +62,57 @@
         <h1>¡Cuidado!</h1>
         <p>Esto puede ocurrir si no te pones las pilas...</p>
     </div>
-    <audio id="alarm-sound" src="sounds/alarm.mp3" preload="auto" loop></audio> <!-- Añadir el elemento de audio -->
     <script>
-        // Mostrar el mensaje de CMD inicialmente
+        const alarmSound = document.getElementById('alarm-sound');
         const cmdMessage = document.getElementById('cmd-message');
         const loadingMessage = document.getElementById('loading-message');
         const matrix = document.getElementById('matrix');
         const message = document.getElementById('message');
-        const alarmSound = document.getElementById('alarm-sound'); // Obtener el elemento de audio
 
-        // Reproducir el sonido de alarma
-        alarmSound.volume = 1.0; // Establecer el volumen al máximo
-        alarmSound.play();
+        // Esperar el primer clic o toque del usuario
+        document.addEventListener('click', () => {
+            alarmSound.play().catch(error => {
+                console.log("El audio no se pudo reproducir: ", error);
+            });
 
-        cmdMessage.style.display = 'block';
+            cmdMessage.style.display = 'block';
 
-        // Mostrar el mensaje de CMD, luego el de carga
-        setTimeout(() => {
-            cmdMessage.style.display = 'none';
-            loadingMessage.style.display = 'block';
-            
-            // Mostrar el mensaje de carga y luego el efecto Matrix
             setTimeout(() => {
-                loadingMessage.style.display = 'none';
-                matrix.style.display = 'block';
-                
-                // Generar el efecto Matrix
-                for (let i = 0; i < 100; i++) {
-                    const line = document.createElement('div');
-                    line.className = 'matrix-line';
-                    line.style.left = Math.random() * 100 + 'vw';
-                    line.style.fontSize = Math.random() * 20 + 10 + 'px'; // Ajustado para evitar tamaños demasiado grandes
-                    line.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                    line.textContent = Array.from({ length: 100 }, () => String.fromCharCode(Math.random() * 122)).join('');
-                    matrix.appendChild(line);
-                }
+                cmdMessage.style.display = 'none';
+                loadingMessage.style.display = 'block';
 
-                // Mostrar el mensaje de cuidado después de otros 10 segundos
                 setTimeout(() => {
-                    // Animar las líneas de Matrix una por una
-                    const matrixLines = document.querySelectorAll('.matrix-line');
-                    matrixLines.forEach((line, index) => {
-                        setTimeout(() => {
-                            line.style.display = 'block';
-                        }, index * 50); // Retrasa cada línea para crear el efecto de escritura
-                    });
+                    loadingMessage.style.display = 'none';
+                    matrix.style.display = 'block';
 
-                    // Mostrar el mensaje después de los efectos de Matrix
+                    for (let i = 0; i < 100; i++) {
+                        const line = document.createElement('div');
+                        line.className = 'matrix-line';
+                        line.style.left = Math.random() * 100 + 'vw';
+                        line.style.fontSize = Math.random() * 20 + 10 + 'px';
+                        line.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                        line.textContent = Array.from({ length: 100 }, () => String.fromCharCode(Math.random() * 122)).join('');
+                        matrix.appendChild(line);
+                    }
+
                     setTimeout(() => {
-                        message.style.display = 'block';
-                    }, 5000); // 5000 milisegundos = 5 segundos después de que las líneas comienzan a mostrarse
+                        const matrixLines = document.querySelectorAll('.matrix-line');
+                        matrixLines.forEach((line, index) => {
+                            setTimeout(() => {
+                                line.style.display = 'block';
+                            }, index * 50);
+                        });
 
-                }, 50); // 10000 milisegundos = 10 segundos para visualizar las líneas de Matrix antes del mensaje final
+                        setTimeout(() => {
+                            message.style.display = 'block';
+                        }, 5000);
 
-            }, 2000); // 5000 milisegundos = 5 segundos para mostrar el mensaje de carga
+                    }, 50);
 
-        }, 3000); // 5000 milisegundos = 5 segundos para mostrar el mensaje de CMD
+                }, 2000);
+
+            }, 3000);
+        }, { once: true });  // Escuchar solo una vez, para la primera interacción
     </script>
 </body>
 </html>
-
