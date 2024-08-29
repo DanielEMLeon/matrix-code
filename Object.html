@@ -69,12 +69,22 @@
         const matrix = document.getElementById('matrix');
         const message = document.getElementById('message');
 
-        // Esperar el primer clic o toque del usuario
-        document.addEventListener('click', () => {
-            alarmSound.play().catch(error => {
-                console.log("El audio no se pudo reproducir: ", error);
-            });
+        // Función para activar el modo pantalla completa
+        function enterFullscreen() {
+            const docEl = document.documentElement;
+            if (docEl.requestFullscreen) {
+                docEl.requestFullscreen();
+            } else if (docEl.mozRequestFullScreen) { // Firefox
+                docEl.mozRequestFullScreen();
+            } else if (docEl.webkitRequestFullscreen) { // Chrome, Safari y Opera
+                docEl.webkitRequestFullscreen();
+            } else if (docEl.msRequestFullscreen) { // IE/Edge
+                docEl.msRequestFullscreen();
+            }
+        }
 
+        // Función para ejecutar la animación y mostrar los mensajes
+        function startAnimation() {
             cmdMessage.style.display = 'block';
 
             setTimeout(() => {
@@ -112,7 +122,27 @@
                 }, 2000);
 
             }, 3000);
-        }, { once: true });  // Escuchar solo una vez, para la primera interacción
+        }
+
+        // Ejecutar todo automáticamente al cargar la página
+        window.addEventListener('load', () => {
+            alarmSound.play().catch(error => {
+                console.log("El audio no se pudo reproducir automáticamente: ", error);
+            });
+
+            startAnimation();
+        });
+
+        // Evento de clic para pantalla completa y sonido
+        document.addEventListener('click', () => {
+            enterFullscreen();
+
+            if (alarmSound.paused) {
+                alarmSound.play().catch(error => {
+                    console.log("El audio no se pudo reproducir: ", error);
+                });
+            }
+        });
     </script>
 </body>
 </html>
