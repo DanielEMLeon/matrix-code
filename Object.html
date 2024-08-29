@@ -12,23 +12,23 @@
             color: green;
             font-family: monospace;
         }
-        #cmd-message {
+        #cmd-message, #loading-message, #message {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             color: green;
             text-align: center;
-            display: none; /* Oculta el mensaje de CMD por defecto */
+            display: none; /* Oculta el mensaje por defecto */
+        }
+        #cmd-message {
+            color: green;
         }
         #loading-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             color: green;
-            text-align: center;
-            display: none; /* Oculta el mensaje de Cargando por defecto */
+        }
+        #message {
+            color: white;
         }
         .matrix {
             position: absolute;
@@ -52,15 +52,6 @@
             from { top: -100%; }
             to { top: 100%; }
         }
-        #message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            text-align: center;
-            display: none; /* Oculta el mensaje por defecto */
-        }
     </style>
 </head>
 <body>
@@ -77,12 +68,18 @@
         <h1>¡Cuidado!</h1>
         <p>Esto puede ocurrir si no te pones las pilas...</p>
     </div>
+    <audio id="alarm-sound" src="./sounds/alarm.mp3" preload="auto" loop></audio> <!-- Añadir el elemento de audio -->
     <script>
         // Mostrar el mensaje de CMD inicialmente
         const cmdMessage = document.getElementById('cmd-message');
         const loadingMessage = document.getElementById('loading-message');
         const matrix = document.getElementById('matrix');
         const message = document.getElementById('message');
+        const alarmSound = document.getElementById('alarm-sound'); // Obtener el elemento de audio
+
+        // Reproducir el sonido de alarma
+        alarmSound.volume = 1.0; // Establecer el volumen al máximo
+        alarmSound.play();
 
         cmdMessage.style.display = 'block';
 
@@ -130,3 +127,4 @@
     </script>
 </body>
 </html>
+
